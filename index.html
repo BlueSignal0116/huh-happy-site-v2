@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>$HUH → HAPPY</title>
+  <meta name="description" content="$HUH — Huh? is the beginning. Become a cat." />
+  <link rel="stylesheet" href="style.css" />
+</head>
+
+<body>
+  <!-- Luxury ritual coin background (no noise / no grid) -->
+  <div class="bg" aria-hidden="true">
+    <div class="bg__ritual"></div>
+    <div class="bg__vignette"></div>
+  </div>
+
+  <!-- Top nav -->
+  <header class="topbar">
+    <a class="brand" href="#top" aria-label="HUH home">
+      <span class="brand__dot"></span>
+      <span class="brand__text">$HUH</span>
+    </a>
+
+    <nav class="nav">
+      <a class="nav__link" href="#rules">Rules</a>
+      <a class="nav__link" href="#wall">Meme Wall</a>
+      <a class="nav__link" href="#spec">Token</a>
+      <a class="nav__link" href="#links">Links</a>
+    </nav>
+
+    <div class="nav-cta">
+      <!-- Buy button (set URL later) -->
+      <a class="btn btn--solid" id="buyTopBtn" href="#" target="_blank" rel="noopener">Buy $HUH</a>
+
+      <a class="btn btn--ghost" href="https://x.com/CatMemeCoin0130" target="_blank" rel="noopener">X</a>
+      <a class="btn btn--ghost" href="https://t.me/+SkoCc7wvzMdlMGI1" target="_blank" rel="noopener">Telegram</a>
+
+      <!-- TODO: X Community URL -->
+      <a class="btn btn--ghost" href="#" target="_blank" rel="noopener">X COMMUNITY</a>
+
+      <a class="btn btn--solid" href="https://x.com/catmeme0130/status/2013958844720824602?s=46&t=Q3Nn41bcVrVSXwAubzvuSg" target="_blank" rel="noopener">Cat Meme Assets</a>
+    </div>
+
+    <button class="burger" aria-label="Open menu" aria-expanded="false">
+      <span></span><span></span><span></span>
+    </button>
+  </header>
+
+  <!-- Mobile drawer -->
+  <aside class="drawer" aria-hidden="true">
+    <div class="drawer__inner">
+      <a class="drawer__link" href="#rules">Rules</a>
+      <a class="drawer__link" href="#wall">Meme Wall</a>
+      <a class="drawer__link" href="#spec">Token</a>
+      <a class="drawer__link" href="#links">Links</a>
+
+      <div class="drawer__cta">
+        <a class="btn btn--solid" id="buyDrawerBtn" href="#" target="_blank" rel="noopener">Buy $HUH</a>
+
+        <a class="btn btn--ghost" href="https://x.com/CatMemeCoin0130" target="_blank" rel="noopener">X</a>
+        <a class="btn btn--ghost" href="https://t.me/+SkoCc7wvzMdlMGI1" target="_blank" rel="noopener">Telegram</a>
+
+        <!-- TODO: X Community URL -->
+        <a class="btn btn--ghost" href="#" target="_blank" rel="noopener">X COMMUNITY</a>
+
+        <a class="btn btn--solid" href="https://x.com/catmeme0130/status/2013958844720824602?s=46&t=Q3Nn41bcVrVSXwAubzvuSg" target="_blank" rel="noopener">Cat Meme Assets</a>
+      </div>
+
+      <p class="drawer__hint">Huh? → Happy.</p>
+    </div>
+  </aside>
+
+  <main id="top">
+    <!-- HERO / First View -->
+    <section class="hero">
+      <div class="hero__inner">
+        <!-- LEFT: token only -->
+        <div class="hero__token">
+         <div class="token-label">Ritual Coin</div>
+
+         <div class="token-wrap" id="tokenWrap">
+          <img class="token" src="images/token_01.png" alt="$HUH token" />
+          <div class="token__shine" aria-hidden="true"></div>
+         </div>
+
+          <div class="huh-panel">
+            <button class="huh-btn" id="huhBtn" type="button" aria-label="Play Huh sound">
+              <span class="huh-btn__face">Tap here!</span>
+            </button>
+
+            <div class="huh-count">
+              <div class="huh-count__label">TOTAL HUHs</div>
+              <div class="huh-count__value" id="huhCount">—</div>
+            </div>
+
+            <audio id="huhAudio" preload="auto">
+              <source src="mp3/Huh.mp3" type="audio/mpeg" />
+            </audio>
+
+            <p class="huh-note">Tap the button. No reason. Just ritual.</p>
+          </div>
+        </div>
+
+        <!-- RIGHT: copy -->
+        <div class="hero__copy">
+          <!-- (1) Launch text added above $HUH -->
+          <div class="launch-time">Launching on 1/30 21:00 JST</div>
+
+          <h1 class="title" aria-label="HUH">
+            <span class="title__glitch" data-text="$HUH">$HUH</span>
+          </h1>
+
+          <div class="story card card--gold">
+            <p class="story__en">
+              Lost money in crypto, huh?<br/>
+              Boss giving you attitude, huh?<br/>
+              Got dumped, huh?<br/>
+              Just become a cat.<br/>
+              And suddenly - <br/>
+              <b>Happy Happy Happy😻😻😻</b>
+            </p>
+
+            <p class="story__jp">
+              暗号資産で失敗してHuh?<br/>
+              上司に嫌味を言われてHuh?<br/>
+              恋人に振られてHuh?<br/>
+              猫になれば <b>Happy Happy Happy😻😻😻</b>
+            </p>
+          </div>
+
+          <div class="hero__buttons">
+            <a class="btn btn--solid" href="#wall">Enter Meme Wall</a>
+            <a class="btn btn--ghost" href="#spec">Token Specs</a>
+          </div>
+
+          <div class="scroll">
+            <span class="scroll__txt">SCROLL</span>
+            <span class="scroll__arrow">↓</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- RULES -->
+    <section class="section rules" id="rules">
+      <div class="section__inner">
+        <h2 class="h2 h2--gold">
+         THE RULES <span class="sp-break">- stay foolish</span>
+        </h2>
+
+        <div class="rules__grid">
+          <div class="card card--gold rule-card">
+            <div class="rule-card__h">01</div>
+            <p class="rule-card__p">
+              If life makes you say “Huh?”,<br/>
+              you’re already one of us.<br/><br/>
+              人生に「はぁ？」って<br/>
+              思ったら、もう仲間。
+            </p>
+          </div>
+
+          <div class="card card--gold rule-card">
+            <div class="rule-card__h">02</div>
+            <p class="rule-card__p">
+              Quit being human.<br/>
+              Become a cat. 🐈<br/><br/>
+              人間やめて、<br/>
+              猫になろう🐈
+            </p>
+          </div>
+
+          <!-- (5) restored -->
+          <div class="card card--gold rule-card">
+            <div class="rule-card__h">03</div>
+            <p class="rule-card__p">
+              Throw your Huh? into $HUH.<br/><br/>
+              君のHuh?を$HUHにぶつけて
+            </p>
+          </div>
+
+          <div class="card card--gold rule-card">
+            <div class="rule-card__h">04</div>
+            <p class="rule-card__p">
+              Let’s become<br/>
+              Happy Happy Happy😻😻😻<br/>
+              together<br/><br/>
+              みんなでなろう<br/>
+              Happy Happy Happy😻😻😻
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- MEME WALL -->
+    <section class="section wall" id="wall">
+      <div class="section__inner">
+        <div class="wall__head">
+          <h2 class="h2 h2--gold">
+           MEME WALL <span class="sp-break">- 猫の落書き場</span>
+          </h2>
+          <p class="muted">
+            <span class="en">Play with memes. Become a cat.</span>
+            <span class="jp">ミームで遊んで、猫になれ</span>
+          </p>
+        </div>
+
+        <div class="meme-grid" id="memeGrid"></div>
+
+        <div class="wall__cta">
+          <a class="btn btn--solid" href="https://x.com/catmeme0130/status/2013958844720824602?s=46&t=Q3Nn41bcVrVSXwAubzvuSg" target="_blank" rel="noopener">Get Cat Meme Assets</a>
+          <a class="btn btn--ghost" href="#links">Official Links</a>
+        </div>
+      </div>
+    </section>
+
+    <!-- TOKEN SPECS -->
+    <section class="section spec" id="spec">
+      <div class="section__inner">
+        <div class="spec__head">
+          <h2 class="h2 h2--gold">
+           TOKEN SPECS <span class="sp-break">- コインの決まりごと</span>
+          </h2>
+          <a class="btn btn--solid" id="buySpecBtn" href="#" target="_blank" rel="noopener">Buy $HUH</a>
+        </div>
+
+        <div class="spec__grid">
+          <div class="spec__card card--gold">
+            <div class="spec__k">Symbol</div>
+            <div class="spec__v spec__v--gold">$HUH</div>
+          </div>
+          <div class="spec__card card--gold">
+            <div class="spec__k">Chain</div>
+            <div class="spec__v spec__v--gold">Solana</div>
+          </div>
+          <div class="spec__card card--gold">
+            <div class="spec__k">Total Supply</div>
+            <div class="spec__v spec__v--gold">1,000,000,000</div>
+          </div>
+          <div class="spec__card card--gold">
+            <div class="spec__k">Decimals</div>
+            <div class="spec__v spec__v--gold">9</div>
+          </div>
+          <div class="spec__card card--gold">
+            <div class="spec__k">Mint Authority</div>
+            <div class="spec__v spec__v--gold">Revoked</div>
+          </div>
+          <div class="spec__card card--gold">
+            <div class="spec__k">Freeze</div>
+            <div class="spec__v spec__v--gold">None</div>
+          </div>
+          <div class="spec__card card--gold">
+            <div class="spec__k">Tax</div>
+            <div class="spec__v spec__v--gold">0/0</div>
+          </div>
+
+          <div class="spec__card spec__card--ca card--gold">
+            <div class="spec__k">CA</div>
+            <div class="ca-row">
+              <span class="spec__v spec__v--gold ca-value" id="caValue">TBA</span>
+              <button class="btn btn--ghost btn--copy" id="copyCaBtn" type="button" disabled>Copy</button>
+            </div>
+            <div class="ca-hint muted">CA will be posted at launch.</div>
+          </div>
+        </div>
+
+        <div class="note card--gold">
+          <p class="muted">Only trust the links on this page.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- LINKS -->
+    <section class="section links" id="links">
+      <div class="section__inner">
+        <h2 class="h2 h2--gold">
+         OFFICIAL LINKS <span class="sp-break">- 猫の集会所</span>
+        </h2>
+
+        <div class="links__grid">
+          <a class="link-card card--gold" href="https://x.com/CatMemeCoin0130" target="_blank" rel="noopener">
+            <img class="link-card__icon" src="images/Xlogo.png" alt="" aria-hidden="true">
+            <div>
+              <div class="link-card__t link-card__t--gold">X</div>
+              <div class="link-card__d">Announcements / memes / ritual</div>
+            </div>
+          </a>
+
+          <a class="link-card card--gold" href="https://t.me/+SkoCc7wvzMdlMGI1" target="_blank" rel="noopener">
+            <img class="link-card__icon" src="images/Telegramlogo.png" alt="" aria-hidden="true">
+            <div>
+              <div class="link-card__t link-card__t--gold">Telegram</div>
+              <div class="link-card__d">Join the cats</div>
+            </div>
+          </a>
+
+          <a class="link-card card--gold" href="#" target="_blank" rel="noopener">
+            <img class="link-card__icon" src="images/XCommunitylogo.png" alt="" aria-hidden="true">
+            <div>
+              <div class="link-card__t link-card__t--gold">X COMMUNITY</div>
+              <div class="link-card__d">Official discussion</div>
+            </div>
+          </a>
+
+          <a class="link-card link-card--hot card--gold" href="https://x.com/catmeme0130/status/2013958844720824602?s=46&t=Q3Nn41bcVrVSXwAubzvuSg" target="_blank" rel="noopener">
+            <img class="link-card__icon" src="images/Catlogo.png" alt="" aria-hidden="true">
+            <div>
+              <div class="link-card__t link-card__t--gold">Cat Meme Assets</div>
+              <div class="link-card__d">Templates / PNGs / clips</div>
+            </div>
+          </a>
+        </div>
+
+        <footer class="footer">
+          <div class="footer__line"></div>
+          <p class="footer__txt">Huh? → Happy.</p>
+          <p class="footer__fine muted">Not financial advice.</p>
+        </footer>
+      </div>
+    </section>
+  </main>
+
+  <!-- Modal -->
+  <div class="modal" id="modal" aria-hidden="true">
+    <div class="modal__backdrop" data-close="1"></div>
+    <div class="modal__content" role="dialog" aria-modal="true" aria-label="Meme preview">
+      <button class="modal__close" aria-label="Close" data-close="1">×</button>
+      <img class="modal__img" id="modalImg" alt="meme preview" />
+    </div>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
