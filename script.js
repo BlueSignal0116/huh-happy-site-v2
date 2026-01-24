@@ -114,7 +114,11 @@ const COUNTER_ENDPOINT = "/.netlify/functions/huh-counter";
 
 function renderCount(v){
   if (!huhCountEl) return;
-  huhCountEl.textContent = (v === null) ? "—" : String(v);
+  if (v === null) {
+    huhCountEl.textContent = "—";
+    return;
+  }
+  huhCountEl.textContent = Number(v).toLocaleString("en-US");
 }
 
 async function fetchCount(){
