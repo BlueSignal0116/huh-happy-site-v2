@@ -681,3 +681,16 @@ main{ padding-top: 74px; }
   }
 }
 
+/* TOTAL HUHs box: center the number */
+.huh-count{
+  display: flex;
+  flex-direction: column;   /* ラベル → 数字 */
+  align-items: center;      /* 横方向中央 */
+  justify-content: center;  /* 縦方向中央 */
+  text-align: center;
+}
+
+.huh-count__value{
+  width: 100%;
+  text-align: center;
+}
