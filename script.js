@@ -1,4 +1,5 @@
 // ====== Helpers ======
+console.log("script.js loaded (GitHub Pages)");
 const $ = (sel, el = document) => el.querySelector(sel);
 const $$ = (sel, el = document) => [...el.querySelectorAll(sel)];
 const safeNumber = (n) => Number.isFinite(Number(n)) ? Number(n) : null;
