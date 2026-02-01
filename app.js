@@ -169,13 +169,21 @@ const huhCountEl = document.getElementById("huhCount");
 const COUNTER_ENDPOINT =
   "https://script.google.com/macros/s/AKfycbyJtp2HiA7Pzx19gwLeqwBqm0KcY1kGNEFtUZ2A6ktjweDaEPg19gxmuXCflu84XVickQ/exec";
 
+// 表示している数をローカル保持（これが“即反応”の鍵）
+let localCount = null;
+
+// UI
 function renderCount(v){
   if (!huhCountEl) return;
-  if (v === null) { huhCountEl.textContent = "—"; return; }
-  huhCountEl.textContent = Number(v).toLocaleString("en-US");
+  if (v === null) {
+    huhCountEl.textContent = "—";
+    localCount = null;
+    return;
+  }
+  localCount = Number(v);
+  huhCountEl.textContent = localCount.toLocaleString("en-US");
 }
 
-// JSONP (with timeout + cache-bust)
 function jsonp(url, timeoutMs = 8000){
   return new Promise((resolve, reject) => {
     const cbName = "cb_" + Math.random().toString(36).slice(2);
@@ -202,54 +210,56 @@ function jsonp(url, timeoutMs = 8000){
 }
 
 async function fetchCount(){
-  console.log("COUNTER: fetchCount start");
   const j = await jsonp(`${COUNTER_ENDPOINT}?op=get`);
-  console.log("COUNTER: fetchCount resolved =", j);
-  return safeNumber(j?.value);
+  const v = Number(j?.value);
+  return Number.isFinite(v) ? v : null;
 }
 
 async function hitCount(){
-  console.log("COUNTER: hitCount start");
-  console.log("COUNTER: endpoint =", COUNTER_ENDPOINT);
-
-  try{
-    const j = await jsonp(`${COUNTER_ENDPOINT}?op=hit`);
-    console.log("COUNTER: hitCount resolved =", j);
-    return safeNumber(j?.value);
-  }catch(e){
-    console.log("COUNTER: hitCount error =", e);
-    return null;
-  }
+  const j = await jsonp(`${COUNTER_ENDPOINT}?op=hit`);
+  const v = Number(j?.value);
+  return Number.isFinite(v) ? v : null;
 }
 
-let cooldown = false;
+// 初期表示（サーバー値）
+(async () => {
+  try{
+    renderCount(await fetchCount());
+  }catch(_){
+    renderCount(null);
+  }
+})();
+
+// 連打制御（通信を詰まらせないため）
+let busy = false;
 
 huhBtn?.addEventListener("click", async () => {
-  console.log("CLICK: start");
+  // ① 体感ラグ0：まず即+1表示（サーバーを待たない）
+  if (localCount !== null) renderCount(localCount + 1);
 
-  // 音（後述の修正も入れる）
+  // 音は待たない（失敗しても無視）
   if (huhAudio){
     try{
       huhAudio.currentTime = 0;
       const p = huhAudio.play();
-      if (p?.catch) p.catch(()=>{});
+      if (p?.catch) p.catch(() => {});
     }catch(_){}
   }
 
-  if (cooldown) return;
-  cooldown = true;
-  setTimeout(() => (cooldown = false), 250); // 700→250でもOK（好みで）
-
-  // ✅ ここ：即時に+1表示（体感ラグ消える）
-  const currentText = huhCountEl?.textContent?.replace(/,/g,"");
-  const current = Number(currentText);
-  if (Number.isFinite(current)) renderCount(current + 1);
-
-  // サーバーの正しい値で上書き
-  const v = await hitCount();
-  if (v !== null) renderCount(v);
-
-  console.log("CLICK: end");
+  // ② 裏でサーバー同期（多重通信は抑制）
+  if (busy) return;
+  busy = true;
+  try{
+    const v = await hitCount();
+    if (v !== null) renderCount(v); // サーバーの正しい値で上書き
+    else {
+      // 同期失敗時：一応サーバー値を取り直してズレを最小化
+      const back = await fetchCount().catch(() => null);
+      if (back !== null) renderCount(back);
+    }
+  } finally {
+    busy = false;
+  }
 });
 
 // ====== CA value + Copy button ======
