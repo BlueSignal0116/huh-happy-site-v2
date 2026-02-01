@@ -112,11 +112,13 @@ async function onHuhTap(){
   // 音
   const huhAudio = document.getElementById("huhAudio");
   if (huhAudio){
-    try{ huhAudio.currentTime = 0; await huhAudio.play(); }catch(_){}
+    try { huhAudio.currentTime = 0; await huhAudio.play(); } catch(_) {}
   }
 
   // カウント（JSONP）
   const COUNTER_ENDPOINT = "https://script.google.com/macros/s/AKfycbyJtp2HiA7Pzx19gwLeqwBqm0KcY1kGNEFtUZ2A6ktjweDaEPg19gxmuXCflu84XVickQ/exec";
+  console.log("COUNTER endpoint =", COUNTER_ENDPOINT);
+
   const huhCountEl = document.getElementById("huhCount");
 
   function renderCount(v){
@@ -143,10 +145,15 @@ async function onHuhTap(){
     });
   }
 
+  // ここが「op=hit」は1つだけ（迷わせない）
   try{
     const j = await jsonp(`${COUNTER_ENDPOINT}?op=hit`);
-    renderCount(Number.isFinite(Number(j?.value)) ? Number(j.value) : null);
-  }catch(_){
+    console.log("COUNTER hit result =", j);
+
+    const v = Number(j?.value);
+    renderCount(Number.isFinite(v) ? v : null);
+  }catch(e){
+    console.log("COUNTER hit failed =", e);
     renderCount(null);
   }
 }
