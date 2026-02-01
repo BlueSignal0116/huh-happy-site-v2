@@ -264,5 +264,8 @@ copyCaBtn?.addEventListener("click", async () => {
 
     copyCaBtn.textContent = "Copied";
     setTimeout(() => (copyCaBtn.textContent = "Copy"), 900);
+
+    const huhBtn = document.getElementById("huhBtn");
+    huhBtn?.addEventListener("click", onHuhTap);
   }
 });
