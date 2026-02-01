@@ -205,8 +205,9 @@ async function hitCount(){
   try{
     const j = await jsonp(`${COUNTER_ENDPOINT}?op=hit`);
     return safeNumber(j?.value);
-  }catch(_){
-    return null;
+  } catch(e) {
+  console.log("DEBUG: hitCount error =", e);
+  return null;
   }
 }
 
@@ -230,6 +231,8 @@ huhBtn?.addEventListener("click", async () => {
 
   const v = await hitCount();
   if (v !== null) renderCount(v);
+  console.log("DEBUG: hitCount returned =", v);
+  console.log("DEBUG: huhCountEl exists =", !!huhCountEl);
 });
 
 // ====== CA value + Copy button ======
