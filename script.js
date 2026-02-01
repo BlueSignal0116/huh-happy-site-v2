@@ -123,6 +123,7 @@ function jsonp(url){
   return new Promise((resolve, reject) => {
     const cbName = "cb_" + Math.random().toString(36).slice(2);
     const s = document.createElement("script");
+
     const cleanup = () => {
       try { delete window[cbName]; } catch (_) { window[cbName] = undefined; }
       s.remove();
