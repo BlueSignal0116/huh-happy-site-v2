@@ -161,7 +161,6 @@ async function onHuhTap(){
 }
 */
 
-/*
 // ====== Huh button: audio + global counter (Google Apps Script / JSONP) ======
 const huhBtn = $("#huhBtn");
 const huhAudio = $("#huhAudio");
@@ -219,6 +218,7 @@ async function hitCount(){
 let cooldown = false;
 
 huhBtn?.addEventListener("click", async () => {
+  console.log("ADD_LISTENER: click");
   console.log("HUH button clicked");
   if (huhAudio){
     try{ huhAudio.currentTime = 0; await huhAudio.play(); }catch(_){}
@@ -231,7 +231,6 @@ huhBtn?.addEventListener("click", async () => {
   const v = await hitCount();
   if (v !== null) renderCount(v);
 });
-*/
 
 // ====== CA value + Copy button ======
 const caValueEl = $("#caValue");
