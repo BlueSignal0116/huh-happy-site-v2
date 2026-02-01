@@ -106,6 +106,51 @@ window.addEventListener("keydown", (e) => {
 
 buildWall();
 
+async function onHuhTap(){
+  console.log("HUH button clicked (onclick)");
+
+  // 音
+  const huhAudio = document.getElementById("huhAudio");
+  if (huhAudio){
+    try{ huhAudio.currentTime = 0; await huhAudio.play(); }catch(_){}
+  }
+
+  // カウント（JSONP）
+  const COUNTER_ENDPOINT = "https://script.google.com/macros/s/AKfycbyJtp2HiA7Pzx19gwLeqwBqm0KcY1kGNEFtUZ2A6ktjweDaEPg19gxmuXCflu84XVickQ/exec";
+  const huhCountEl = document.getElementById("huhCount");
+
+  function renderCount(v){
+    if (!huhCountEl) return;
+    if (v === null) { huhCountEl.textContent = "—"; return; }
+    huhCountEl.textContent = Number(v).toLocaleString("en-US");
+  }
+
+  function jsonp(url){
+    return new Promise((resolve, reject) => {
+      const cbName = "cb_" + Math.random().toString(36).slice(2);
+      const s = document.createElement("script");
+
+      const cleanup = () => {
+        try { delete window[cbName]; } catch (_) { window[cbName] = undefined; }
+        s.remove();
+      };
+
+      window[cbName] = (data) => { cleanup(); resolve(data); };
+      s.onerror = () => { cleanup(); reject(new Error("jsonp_failed")); };
+
+      s.src = url + (url.includes("?") ? "&" : "?") + "callback=" + cbName;
+      document.body.appendChild(s);
+    });
+  }
+
+  try{
+    const j = await jsonp(`${COUNTER_ENDPOINT}?op=hit`);
+    renderCount(Number.isFinite(Number(j?.value)) ? Number(j.value) : null);
+  }catch(_){
+    renderCount(null);
+  }
+}
+
 // ====== Huh button: audio + global counter (Google Apps Script / JSONP) ======
 const huhBtn = $("#huhBtn");
 const huhAudio = $("#huhAudio");
