@@ -163,6 +163,7 @@ async function hitCount(){
 let cooldown = false;
 
 huhBtn?.addEventListener("click", async () => {
+  console.log("HUH button clicked");
   if (huhAudio){
     try{ huhAudio.currentTime = 0; await huhAudio.play(); }catch(_){}
   }
