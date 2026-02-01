@@ -106,6 +106,7 @@ window.addEventListener("keydown", (e) => {
 
 buildWall();
 
+/*
 async function onHuhTap(){
   console.log("HUH button clicked (onclick)");
   console.log("COUNTER: start");
@@ -158,6 +159,7 @@ async function onHuhTap(){
     renderCount(null);
   }
 }
+*/
 
 /*
 // ====== Huh button: audio + global counter (Google Apps Script / JSONP) ======
