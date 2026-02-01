@@ -175,11 +175,6 @@ function renderCount(v){
   huhCountEl.textContent = Number(v).toLocaleString("en-US");
 }
 
-function safeNumber(n){
-  const x = Number(n);
-  return Number.isFinite(x) ? x : null;
-}
-
 // JSONP (with timeout + cache-bust)
 function jsonp(url, timeoutMs = 8000){
   return new Promise((resolve, reject) => {
