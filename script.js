@@ -161,12 +161,13 @@ async function onHuhTap(){
 }
 */
 
-// ====== Huh button: audio + global counter (Google Apps Script / JSONP) ======
-const huhBtn = $("#huhBtn");
-const huhAudio = $("#huhAudio");
-const huhCountEl = $("#huhCount");
+// ====== Huh button: audio + global counter (GAS / JSONP) ======
+const huhBtn = document.getElementById("huhBtn");
+const huhAudio = document.getElementById("huhAudio");
+const huhCountEl = document.getElementById("huhCount");
 
-const COUNTER_ENDPOINT = "https://script.google.com/macros/s/AKfycbyJtp2HiA7Pzx19gwLeqwBqm0KcY1kGNEFtUZ2A6ktjweDaEPg19gxmuXCflu84XVickQ/exec";
+const COUNTER_ENDPOINT =
+  "https://script.google.com/macros/s/AKfycbyJtp2HiA7Pzx19gwLeqwBqm0KcY1kGNEFtUZ2A6ktjweDaEPg19gxmuXCflu84XVickQ/exec";
 
 function renderCount(v){
   if (!huhCountEl) return;
@@ -174,12 +175,20 @@ function renderCount(v){
   huhCountEl.textContent = Number(v).toLocaleString("en-US");
 }
 
-function jsonp(url){
+function safeNumber(n){
+  const x = Number(n);
+  return Number.isFinite(x) ? x : null;
+}
+
+// JSONP (with timeout + cache-bust)
+function jsonp(url, timeoutMs = 8000){
   return new Promise((resolve, reject) => {
     const cbName = "cb_" + Math.random().toString(36).slice(2);
     const s = document.createElement("script");
+    const sep = url.includes("?") ? "&" : "?";
 
     const cleanup = () => {
+      clearTimeout(timer);
       try { delete window[cbName]; } catch (_) { window[cbName] = undefined; }
       s.remove();
     };
@@ -187,52 +196,64 @@ function jsonp(url){
     window[cbName] = (data) => { cleanup(); resolve(data); };
     s.onerror = () => { cleanup(); reject(new Error("jsonp_failed")); };
 
-    s.src = url + (url.includes("?") ? "&" : "?") + "callback=" + cbName;
+    const timer = setTimeout(() => {
+      cleanup();
+      reject(new Error("jsonp_timeout"));
+    }, timeoutMs);
+
+    s.src = url + sep + "callback=" + cbName + "&_=" + Date.now();
     document.body.appendChild(s);
   });
 }
 
 async function fetchCount(){
-  try{
-    const j = await jsonp(`${COUNTER_ENDPOINT}?op=get`);
-    return safeNumber(j?.value);
-  }catch(_){
-    return null;
-  }
+  console.log("COUNTER: fetchCount start");
+  const j = await jsonp(`${COUNTER_ENDPOINT}?op=get`);
+  console.log("COUNTER: fetchCount resolved =", j);
+  return safeNumber(j?.value);
 }
 
 async function hitCount(){
-  try{
-    const j = await jsonp(`${COUNTER_ENDPOINT}?op=hit`);
-    return safeNumber(j?.value);
-  } catch(e) {
-  console.log("DEBUG: hitCount error =", e);
-  return null;
-  }
+  console.log("COUNTER: hitCount start");
+  const j = await jsonp(`${COUNTER_ENDPOINT}?op=hit`);
+  console.log("COUNTER: hitCount resolved =", j);
+  return safeNumber(j?.value);
 }
 
+// init
 (async () => {
-  const initial = await fetchCount();
-  renderCount(initial);
+  try{
+    const initial = await fetchCount();
+    renderCount(initial);
+  }catch(e){
+    console.log("COUNTER: init failed =", e);
+    renderCount(null);
+  }
 })();
 
 let cooldown = false;
 
 huhBtn?.addEventListener("click", async () => {
-  console.log("ADD_LISTENER: click");
-  console.log("HUH button clicked");
+  console.log("CLICK: start");
+
+  // audio (failure ok)
   if (huhAudio){
-    try{ huhAudio.currentTime = 0; await huhAudio.play(); }catch(_){}
+    try{ huhAudio.currentTime = 0; await huhAudio.play(); }catch(e){ console.log("AUDIO: play failed =", e); }
   }
 
-  if (cooldown) return;
+  if (cooldown) { console.log("CLICK: cooldown"); return; }
   cooldown = true;
   setTimeout(() => (cooldown = false), 700);
 
-  const v = await hitCount();
-  if (v !== null) renderCount(v);
-  console.log("DEBUG: hitCount returned =", v);
-  console.log("DEBUG: huhCountEl exists =", !!huhCountEl);
+  try{
+    const v = await hitCount();
+    console.log("CLICK: hit result =", v);
+    if (v !== null) renderCount(v);
+  }catch(e){
+    console.log("CLICK: hit failed =", e);
+  }
+
+  console.log("CLICK: end");
 });
 
 // ====== CA value + Copy button ======
@@ -268,21 +289,6 @@ copyCaBtn?.addEventListener("click", async () => {
 
     copyCaBtn.textContent = "Copied";
     setTimeout(() => (copyCaBtn.textContent = "Copy"), 900);
-
-    const huhBtn = document.getElementById("huhBtn");
-    huhBtn?.addEventListener("click", onHuhTap);
   }
 });
 console.log("DEBUG: bottom reached");
-
-document.addEventListener("DOMContentLoaded", () => {
-  console.log("DEBUG: DOMContentLoaded");
-
-  const huhBtn = document.getElementById("huhBtn");
-  console.log("DEBUG: huhBtn =", huhBtn);
-
-  huhBtn?.addEventListener("click", () => {
-    console.log("DEBUG: huhBtn clicked");
-  });
-});
-
