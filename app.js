@@ -231,9 +231,19 @@ let cooldown = false;
 huhBtn?.addEventListener("click", async () => {
   console.log("CLICK: start");
 
-  // audio (failure ok)
+  // audio（絶対に await しない）
   if (huhAudio){
-    try{ huhAudio.currentTime = 0; await huhAudio.play(); }catch(e){ console.log("AUDIO: play failed =", e); }
+    console.log("AUDIO: try play");
+    try{
+      huhAudio.currentTime = 0;
+      const p = huhAudio.play();
+      // Promiseを待たない。失敗だけログ
+      if (p && typeof p.catch === "function") {
+        p.catch(e => console.log("AUDIO: play failed =", e));
+      }
+    }catch(e){
+      console.log("AUDIO: play threw =", e);
+    }
   }
 
   if (cooldown) { console.log("CLICK: cooldown"); return; }
@@ -241,6 +251,7 @@ huhBtn?.addEventListener("click", async () => {
   setTimeout(() => (cooldown = false), 700);
 
   try{
+    console.log("CLICK: before hit");
     const v = await hitCount();
     console.log("CLICK: hit result =", v);
     if (v !== null) renderCount(v);
