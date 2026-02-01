@@ -210,56 +210,62 @@ async function fetchCount(){
 
 async function hitCount(){
   console.log("COUNTER: hitCount start");
-  const j = await jsonp(`${COUNTER_ENDPOINT}?op=hit`);
-  console.log("COUNTER: hitCount resolved =", j);
-  return safeNumber(j?.value);
-}
+  console.log("COUNTER: endpoint =", COUNTER_ENDPOINT);
 
-// init
-(async () => {
   try{
-    const initial = await fetchCount();
-    renderCount(initial);
+    const j = await jsonp(`${COUNTER_ENDPOINT}?op=hit`);
+    console.log("COUNTER: hitCount resolved =", j);
+    return safeNumber(j?.value);
   }catch(e){
-    console.log("COUNTER: init failed =", e);
-    renderCount(null);
+    console.log("COUNTER: hitCount error =", e);
+    return null;
   }
-})();
+}
 
 let cooldown = false;
 
 huhBtn?.addEventListener("click", async () => {
   console.log("CLICK: start");
 
-  // audio（絶対に await しない）
-  if (huhAudio){
-    console.log("AUDIO: try play");
-    try{
-      huhAudio.currentTime = 0;
-      const p = huhAudio.play();
-      // Promiseを待たない。失敗だけログ
-      if (p && typeof p.catch === "function") {
-        p.catch(e => console.log("AUDIO: play failed =", e));
+  try {
+    console.log("CLICK: step 1 - audio block enter");
+
+    if (huhAudio) {
+      console.log("CLICK: step 1.1 - huhAudio exists");
+      try {
+        huhAudio.currentTime = 0;
+        const p = huhAudio.play(); // awaitしない
+        console.log("CLICK: step 1.2 - play() called, p =", p);
+
+        if (p && typeof p.catch === "function") {
+          p.catch(e => console.log("AUDIO: play failed =", e));
+        }
+      } catch (e) {
+        console.log("AUDIO: play threw =", e);
       }
-    }catch(e){
-      console.log("AUDIO: play threw =", e);
+    } else {
+      console.log("CLICK: step 1.1 - huhAudio is null");
     }
-  }
 
-  if (cooldown) { console.log("CLICK: cooldown"); return; }
-  cooldown = true;
-  setTimeout(() => (cooldown = false), 700);
+    console.log("CLICK: step 2 - cooldown check enter");
 
-  try{
-    console.log("CLICK: before hit");
+    if (cooldown) {
+      console.log("CLICK: cooldown");
+      return;
+    }
+    cooldown = true;
+    setTimeout(() => (cooldown = false), 700);
+
+    console.log("CLICK: step 3 - before hitCount call");
     const v = await hitCount();
-    console.log("CLICK: hit result =", v);
-    if (v !== null) renderCount(v);
-  }catch(e){
-    console.log("CLICK: hit failed =", e);
-  }
+    console.log("CLICK: step 4 - hitCount returned =", v);
 
-  console.log("CLICK: end");
+    if (v !== null) renderCount(v);
+
+    console.log("CLICK: end");
+  } catch (e) {
+    console.log("CLICK: outer catch =", e);
+  }
 });
 
 // ====== CA value + Copy button ======
