@@ -106,28 +106,39 @@ window.addEventListener("keydown", (e) => {
 
 buildWall();
 
-// ====== Huh button: audio + global counter (Google Apps Script) ======
+// ====== Huh button: audio + global counter (Google Apps Script / JSONP) ======
 const huhBtn = $("#huhBtn");
 const huhAudio = $("#huhAudio");
 const huhCountEl = $("#huhCount");
 
-// Google Apps Script の Web app URL（このままコピペ）
 const COUNTER_ENDPOINT = "https://script.google.com/macros/s/AKfycbyJtp2HiA7Pzx19gwLeqwBqm0KcY1kGNEFtUZ2A6ktjweDaEPg19gxmuXCflu84XVickQ/exec";
 
 function renderCount(v){
   if (!huhCountEl) return;
-  if (v === null) {
-    huhCountEl.textContent = "—";
-    return;
-  }
+  if (v === null) { huhCountEl.textContent = "—"; return; }
   huhCountEl.textContent = Number(v).toLocaleString("en-US");
+}
+
+function jsonp(url){
+  return new Promise((resolve, reject) => {
+    const cbName = "cb_" + Math.random().toString(36).slice(2);
+    const s = document.createElement("script");
+    const cleanup = () => {
+      try { delete window[cbName]; } catch (_) { window[cbName] = undefined; }
+      s.remove();
+    };
+
+    window[cbName] = (data) => { cleanup(); resolve(data); };
+    s.onerror = () => { cleanup(); reject(new Error("jsonp_failed")); };
+
+    s.src = url + (url.includes("?") ? "&" : "?") + "callback=" + cbName;
+    document.body.appendChild(s);
+  });
 }
 
 async function fetchCount(){
   try{
-    const r = await fetch(`${COUNTER_ENDPOINT}?op=get`, { cache: "no-store" });
-    if (!r.ok) return null;
-    const j = await r.json();
+    const j = await jsonp(`${COUNTER_ENDPOINT}?op=get`);
     return safeNumber(j?.value);
   }catch(_){
     return null;
@@ -136,38 +147,29 @@ async function fetchCount(){
 
 async function hitCount(){
   try{
-    const r = await fetch(`${COUNTER_ENDPOINT}?op=hit`, { cache: "no-store" });
-    if (!r.ok) return null;
-    const j = await r.json();
+    const j = await jsonp(`${COUNTER_ENDPOINT}?op=hit`);
     return safeNumber(j?.value);
   }catch(_){
     return null;
   }
 }
 
-// 初期表示：現在の累計を取得して表示
 (async () => {
   const initial = await fetchCount();
   renderCount(initial);
 })();
 
-// 連打で爆増しすぎないための簡易クールダウン（任意）
 let cooldown = false;
 
 huhBtn?.addEventListener("click", async () => {
-  // まず音（UX優先）
   if (huhAudio){
-    try{
-      huhAudio.currentTime = 0;
-      await huhAudio.play();
-    }catch(_){}
+    try{ huhAudio.currentTime = 0; await huhAudio.play(); }catch(_){}
   }
 
   if (cooldown) return;
   cooldown = true;
   setTimeout(() => (cooldown = false), 700);
 
-  // カウントを増やして表示更新
   const v = await hitCount();
   if (v !== null) renderCount(v);
 });
