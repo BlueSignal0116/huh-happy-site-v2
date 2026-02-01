@@ -106,17 +106,13 @@ window.addEventListener("keydown", (e) => {
 
 buildWall();
 
-// ====== Huh button: audio + global counter (CountAPI) ======
+// ====== Huh button: audio + global counter (Google Apps Script) ======
 const huhBtn = $("#huhBtn");
 const huhAudio = $("#huhAudio");
 const huhCountEl = $("#huhCount");
 
-/**
- * CountAPI を使う
- * namespace と key は「世界で一意」じゃないと他人と被るので、あなた専用の文字列にする
- */
-const COUNT_NAMESPACE = "bluesignal0116-huh";     // 好きに変えてOK（ユニーク推奨）
-const COUNT_KEY = "tap-huh-audio";               // 好きに変えてOK
+// Google Apps Script の Web app URL（このままコピペ）
+const COUNTER_ENDPOINT = "https://script.google.com/macros/s/AKfycbyJtp2HiA7Pzx19gwLeqwBqm0KcY1kGNEFtUZ2A6ktjweDaEPg19gxmuXCflu84XVickQ/exec";
 
 function renderCount(v){
   if (!huhCountEl) return;
@@ -129,7 +125,7 @@ function renderCount(v){
 
 async function fetchCount(){
   try{
-    const r = await fetch(`https://api.countapi.xyz/get/${encodeURIComponent(COUNT_NAMESPACE)}/${encodeURIComponent(COUNT_KEY)}`, { cache: "no-store" });
+    const r = await fetch(`${COUNTER_ENDPOINT}?op=get`, { cache: "no-store" });
     if (!r.ok) return null;
     const j = await r.json();
     return safeNumber(j?.value);
@@ -140,7 +136,7 @@ async function fetchCount(){
 
 async function hitCount(){
   try{
-    const r = await fetch(`https://api.countapi.xyz/hit/${encodeURIComponent(COUNT_NAMESPACE)}/${encodeURIComponent(COUNT_KEY)}`, { cache: "no-store" });
+    const r = await fetch(`${COUNTER_ENDPOINT}?op=hit`, { cache: "no-store" });
     if (!r.ok) return null;
     const j = await r.json();
     return safeNumber(j?.value);
@@ -155,11 +151,11 @@ async function hitCount(){
   renderCount(initial);
 })();
 
-// 連打で爆増しすぎないための簡易クールダウン（任意だけどおすすめ）
+// 連打で爆増しすぎないための簡易クールダウン（任意）
 let cooldown = false;
 
 huhBtn?.addEventListener("click", async () => {
-  // UX優先：まず音を鳴らす
+  // まず音（UX優先）
   if (huhAudio){
     try{
       huhAudio.currentTime = 0;
@@ -167,10 +163,9 @@ huhBtn?.addEventListener("click", async () => {
     }catch(_){}
   }
 
-  // クールダウン中ならカウント送信しない（任意）
   if (cooldown) return;
   cooldown = true;
-  setTimeout(() => (cooldown = false), 700); // 0.7秒
+  setTimeout(() => (cooldown = false), 700);
 
   // カウントを増やして表示更新
   const v = await hitCount();
