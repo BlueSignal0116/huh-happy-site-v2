@@ -227,45 +227,29 @@ let cooldown = false;
 huhBtn?.addEventListener("click", async () => {
   console.log("CLICK: start");
 
-  try {
-    console.log("CLICK: step 1 - audio block enter");
-
-    if (huhAudio) {
-      console.log("CLICK: step 1.1 - huhAudio exists");
-      try {
-        huhAudio.currentTime = 0;
-        const p = huhAudio.play(); // awaitしない
-        console.log("CLICK: step 1.2 - play() called, p =", p);
-
-        if (p && typeof p.catch === "function") {
-          p.catch(e => console.log("AUDIO: play failed =", e));
-        }
-      } catch (e) {
-        console.log("AUDIO: play threw =", e);
-      }
-    } else {
-      console.log("CLICK: step 1.1 - huhAudio is null");
-    }
-
-    console.log("CLICK: step 2 - cooldown check enter");
-
-    if (cooldown) {
-      console.log("CLICK: cooldown");
-      return;
-    }
-    cooldown = true;
-    setTimeout(() => (cooldown = false), 700);
-
-    console.log("CLICK: step 3 - before hitCount call");
-    const v = await hitCount();
-    console.log("CLICK: step 4 - hitCount returned =", v);
-
-    if (v !== null) renderCount(v);
-
-    console.log("CLICK: end");
-  } catch (e) {
-    console.log("CLICK: outer catch =", e);
+  // 音（後述の修正も入れる）
+  if (huhAudio){
+    try{
+      huhAudio.currentTime = 0;
+      const p = huhAudio.play();
+      if (p?.catch) p.catch(()=>{});
+    }catch(_){}
   }
+
+  if (cooldown) return;
+  cooldown = true;
+  setTimeout(() => (cooldown = false), 250); // 700→250でもOK（好みで）
+
+  // ✅ ここ：即時に+1表示（体感ラグ消える）
+  const currentText = huhCountEl?.textContent?.replace(/,/g,"");
+  const current = Number(currentText);
+  if (Number.isFinite(current)) renderCount(current + 1);
+
+  // サーバーの正しい値で上書き
+  const v = await hitCount();
+  if (v !== null) renderCount(v);
+
+  console.log("CLICK: end");
 });
 
 // ====== CA value + Copy button ======
