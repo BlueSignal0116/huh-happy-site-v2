@@ -270,3 +270,16 @@ copyCaBtn?.addEventListener("click", async () => {
     huhBtn?.addEventListener("click", onHuhTap);
   }
 });
+console.log("DEBUG: bottom reached");
+
+document.addEventListener("DOMContentLoaded", () => {
+  console.log("DEBUG: DOMContentLoaded");
+
+  const huhBtn = document.getElementById("huhBtn");
+  console.log("DEBUG: huhBtn =", huhBtn);
+
+  huhBtn?.addEventListener("click", () => {
+    console.log("DEBUG: huhBtn clicked");
+  });
+});
+
