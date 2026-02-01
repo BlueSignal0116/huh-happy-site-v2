@@ -109,13 +109,11 @@ buildWall();
 async function onHuhTap(){
   console.log("HUH button clicked (onclick)");
 
-  // 音
   const huhAudio = document.getElementById("huhAudio");
   if (huhAudio){
     try { huhAudio.currentTime = 0; await huhAudio.play(); } catch(_) {}
   }
 
-  // カウント（JSONP）
   const COUNTER_ENDPOINT = "https://script.google.com/macros/s/AKfycbyJtp2HiA7Pzx19gwLeqwBqm0KcY1kGNEFtUZ2A6ktjweDaEPg19gxmuXCflu84XVickQ/exec";
   console.log("COUNTER endpoint =", COUNTER_ENDPOINT);
 
@@ -145,7 +143,6 @@ async function onHuhTap(){
     });
   }
 
-  // ここが「op=hit」は1つだけ（迷わせない）
   try{
     const j = await jsonp(`${COUNTER_ENDPOINT}?op=hit`);
     console.log("COUNTER hit result =", j);
