@@ -108,6 +108,7 @@ buildWall();
 
 async function onHuhTap(){
   console.log("HUH button clicked (onclick)");
+  console.log("COUNTER: start");
 
   const huhAudio = document.getElementById("huhAudio");
   if (huhAudio){
@@ -155,6 +156,7 @@ async function onHuhTap(){
   }
 }
 
+/*
 // ====== Huh button: audio + global counter (Google Apps Script / JSONP) ======
 const huhBtn = $("#huhBtn");
 const huhAudio = $("#huhAudio");
@@ -224,6 +226,7 @@ huhBtn?.addEventListener("click", async () => {
   const v = await hitCount();
   if (v !== null) renderCount(v);
 });
+*/
 
 // ====== CA value + Copy button ======
 const caValueEl = $("#caValue");
